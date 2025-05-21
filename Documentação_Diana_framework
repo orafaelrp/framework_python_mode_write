@@ -1,0 +1,75 @@
+
+##### Documentação Diana Framework - Vertical de Negócios PJ #####
+
+
+
+# Objetivo
+
+  O objetivo deste framework é facilitar a criação e manipulação de tabelas no formato Delta, tanto em tabelas físicas quanto views no ambiente Databricks. Ele foi desenvolvido para ser utilizado com a combinação de Python e SQL, utilizando o Spark.
+
+
+
+# Versão -> 1.1
+
+
+
+# Link para o notebook modelo frame Diana
+
+  Para o bom funcionamento do frame, necessário aletar o e-mail contido no meio da string.
+
+  𒊹𒊹𒊹 Notebook modelo frame Diana Tabela -> https://banco_cooperativo-dev.cloud.databricks.com/editor/notebooks/3050012463573001
+  𒊹𒊹𒊹 Notebook modelo frame Diana View -> https://banco_cooperativo-dev.cloud.databricks.com/editor/notebooks/3050012463572855
+  
+  Tabela - Quando existe a necessidade de ter dados provenientes de fontes externas, como Teradata e Denodo. Ou se for necessário enviar os dados tratados para o Power BI ou Denodo. Ou quando houver necessidade de armazenar fisicamente os dados, seja por motivos de histórico e ou manutenção. Nesse formato, o processamento é mais oneroso em vários aspectos. Exigindo ainda atuação da equipe da engenharia para a completude do processo, por meio de uma rotina de atualização e monitoramento.
+
+  View - Quando existe a necessidade de ter os dados mais atualizados ou em uma demanda repetitiva. Como as views não armazenam os dados fisicamente, o processo de forma geral é mais rápido e fluido. Não exigindo a criação de uma rotina de atualização, eliminando diversos custos do processo.
+  
+
+
+# Caminho absoluto para o framework Diana
+
+  Comando: %run Workspace/Users/SEU_E-MAIL@banco_cooperativo.com.br/repositorio_exps/utils/Diana_framework/diana_framework
+
+
+
+# Entradas esperadas para criação de exp's via ordem do usuário por meio do comando TableManager:
+
+  ## Comandos para configuração do serviço
+
+    TableManager.table_columns - Serve para configurar as colunas da exposição. É necessário informar o nome e formato das colunas. O campo descritivo é opcional, porém é recomendado preenchê-lo.
+
+    TableManager.table_pk - Cria um critério de unicidade dentro da exposição.
+
+    TableManager.table_partition - Este comando realiza a partição dos dados finais. Embora não seja obrigatório, quando acionado auxilia no desempenho da consulta final, caso o critério seja adicionado à consulta.
+
+    TableManager.table_comment - Adiciona um comentário a exposição final.
+
+    TableManager.source_view - Serve para nomear a esposição final, bem como alimentar o objeto que será criado pelo usuário.
+
+  ## Comandos para criação da exposição
+
+    Tablemanager.check_table() - Comando que realiza a validação de alguns fatores da exposição, tais como o preenchimento de alguns campos, opções de particionamento, número, nome e formato das colunas, entre outros.
+
+    TableManager.drop_table() - Comando para dropar a tabela já existente, orientado pelo nome indicado pelo usuário. Este comando deverá apagar a tabela, diretório e todos os seus anexos e links vinculados.
+
+    TableManager.create_table_overwrite() - Comando para criar a exposição em modo de escrita OVERWRITE. Vai criar um objeto com as configurações indicadas pelo usuário e inserir todas as linhas encontradas na query final.
+
+    TableManager.create_table_append() - Comando para acresentar linhas à tabela que já existe. Para isso, é feito um confronto entre a coluna UNIQUE_ID da tabela existente e a mesma coluna da query final. As linhas da query que não estiverem presentes na tabela serão adicionadas à tabela existente. Caso a tabela indicada pelo usuário não seja encontrada, o modo de escrita OVERWRITE será acionado automaticamente.
+
+    TableManager.create_table_upsert() - Comando para acresentar a atualizar as linhas da tabela que já existe. Para isso, é feito um confronto entre a coluna UNIQUE_ID da tabela existente e a mesma coluna da query final. As linhas da query que não estiverem presentes na tabela serão adicionadas à tabela existente. As linhas da tabela que já estiverem presentes na query, terão seus registros atualizados com os dados da query. Caso a tabela indicada pelo usuário não seja encontrada, o modo de escrita OVERWRITE será acionado automaticamente.
+
+    TableManager.display_table() - Comando para exibir as primeiras linhas do objeto criado via framework.
+
+
+
+# Entradas esperadas para criação de view's via ordem do usuário por meio do comando TableManage:
+
+  ## Comandos para configuração do serviço
+
+    TableManager.name_view - Serve para nomear a view que será criada pelo usuário.
+
+  ## Comandos para criação da view
+
+    TableManager.create_view() - Comando para criar ou recriar uma view persistente com base na query inserida na variável 'query_view'. Essa view será criada com as configurações indicadas pelo usuário, incluindo o nome da view, o schema e a query que popula a view. Outras opções como particionamento e chave_pk não se aplicam a esse formato, pois os dados são alterados a cada execução. Na construção da consulta, utilize somente dados vindos do Unity Catalog, sendo ref's e ou exp's. Sem a tualização de temp view, ou dados temporários.
+
+    TableManager.display_view() - Comando para exibir as primeiras linhas do objeto criado via framework.
